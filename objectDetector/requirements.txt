@@ -1,0 +1,4 @@
+# Object Detector — Dependencies
+ultralytics>=8.2.0
+opencv-python>=4.9.0
+torch>=2.2.0

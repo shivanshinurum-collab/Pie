@@ -1,0 +1,635 @@
+# INURUM TECHNOLOGIES - COMPLETE DATASTORE (UNABRIDGED)
+
+This file contains the complete and detailed data for Inurum Technologies, optimized for Retrieval-Augmented Generation (RAG).
+
+================================================================================
+SECTION 1: COMPANY OVERVIEW & GENERAL INFORMATION
+================================================================================
+
+## Introduction & Profile of Inurum Technologies
+Inurum Technologies is an elite end-to-end product engineering company headquartered in Indore, Madhya Pradesh, India, with European operations based in Legnano, Italy. The company specializes in building high-performance mobile applications, internet-of-things (IoT) products, and scalable software-as-a-service (SaaS) backend platforms for both startups and enterprises globally.
+
+* Tagline: Flutter App, IoT & SaaS Development Company in Indore, India
+* Primary Website: https://www.inurum.com
+* General Email: info@inurum.com
+* General Phone: +91-7974334291
+
+## Core Philosophy of Inurum Technologies: "One Team, Full Stack, No Handoffs"
+At Inurum Technologies, software and hardware are treated with the same structural integrity as physical construction. The core operational philosophy centers on eliminating integration delays and blame games by unifying all engineering facets under a single team:
+* Hardware Engineering (PCB Design, RF Tuning, Signal Integrity)
+* Embedded Firmware (C/C++, RTOS, Power Optimization)
+* Mobile Applications (Flutter, Native iOS, Native Android)
+* Backend Infrastructure (Scalable APIs, Cloud Hosting, Databases)
+
+By keeping all layers under one roof, Inurum Technologies ensures seamless integration, rapid iteration, and high product reliability without third-party friction or communication bottlenecks.
+
+## Contact & Location Directory of Inurum Technologies
+
+### 1. Indore Headquarters (India)
+* Address: Plot No. 388, Infront of Retina Hospital, Scheme No. 54 PU4, Indore, Madhya Pradesh, India - 452010
+* Coordinates: 22.7196° N, 75.8577° E
+* Timezone: UTC+5:30 (IST)
+* Office Hours: Monday to Friday, 09:00 - 18:00
+* Primary Phone: +91-7974334291
+* Inquiries Email: info@inurum.com
+
+### 2. European Operations (Italy)
+* Address: Via Grazia Deledda, 11, Legnano (MI) - ITALY
+* Coordinates: 45.5953° N, 8.9147° E
+* Timezone: UTC+1 (CET / CEST)
+* Primary Phone: +39 03311586334
+* Partner Email: contact@techcrafters.it
+
+## Leadership, Owners & Team Directory of Inurum Technologies
+
+### Owners & Executives
+* Owners of Inurum Technologies: Kamlesh Kushwah, Shubham Jain
+* CEO of Inurum Technologies: Shubham Jain
+* Manager of Inurum Technologies: Kamlesh Kushwah
+
+### Engineering & Developer Roles
+* Flutter Developers at Inurum Technologies: Shivansh Kushwah, Mohan Garase, Tulsi Bhawsar, Devashish Sharma, Manish Pal, Rishabh Soni, Imran Khan, and Shubham Jain.
+* Backend Developers at Inurum Technologies: Madhvi Dwivedi, Praveen Shrivastav, Shivam Mishra, and Shivansh Kushwah.
+* Java Developers at Inurum Technologies: Shivam Mishra and Devashish Sharma.
+* Android Developers at Inurum Technologies: Shivansh Kushwah, Shubham Jain, Harsh Hotwani, and Aman Rai.
+* iOS Developers at Inurum Technologies: Priyanshi Jadon and Shivansh Kushwah.
+* Full Stack Developers at Inurum Technologies: Shivansh Kushwah and Madhvi Dwivedi.
+* Python Developers at Inurum Technologies: Shivansh Kushwah and Shivam Mishra.
+* AI Engineers at Inurum Technologies: Shivansh Kushwah.
+
+### Business Development
+* BDE (Business Development Executive) at Inurum Technologies: Shubham Saratha
+
+### Individual Team Profiles & Skills Directory at Inurum Technologies
+
+#### 1. Shubham Jain
+* Full Name: Shubham Jain
+* Company: Inurum Technologies
+* Roles / Titles: CEO, Owner, Flutter Developer, Android Developer
+* Technical Skills & Specialties: Cross-platform Flutter (Dart), Native Android (Kotlin, Java, Android SDK), Executive Leadership, Corporate Management, Strategic Planning.
+* Summary: Shubham Jain is the CEO, co-owner, and developer at Inurum Technologies, leading both executive decisions and mobile development teams.
+
+#### 2. Kamlesh Kushwah
+* Full Name: Kamlesh Kushwah
+* Company: Inurum Technologies
+* Roles / Titles: Owner, Manager
+* Technical Skills & Specialties: Operations Management, Team Coordination, Project Delivery, Client Liaison, Leadership.
+* Summary: Kamlesh Kushwah is the co-owner and General Manager of Inurum Technologies, overseeing operational execution and project management.
+
+#### 3. Shivansh Kushwah
+* Full Name: Shivansh Kushwah
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer, Backend Developer, Android Developer, iOS Developer, Full Stack Developer, Python Developer, AI Engineer
+* Technical Skills & Specialties: Flutter (Dart), Backend microservices (Node.js, Go), Android (Kotlin, Java), iOS (Swift, SwiftUI), Full-stack engineering, Python (Django, Flask), Artificial Intelligence (AI) and Machine Learning (Kalman filtering, sensor fusion).
+* Summary: Shivansh Kushwah is a highly versatile Full Stack and AI Engineer at Inurum Technologies with deep skills across mobile architectures, backend services, and machine learning models.
+
+#### 4. Shivam Mishra
+* Full Name: Shivam Mishra
+* Company: Inurum Technologies
+* Roles / Titles: Backend Developer, Java Developer, Python Developer
+* Technical Skills & Specialties: Backend engineering, Java (Spring Boot), Python (Django), Database architectures, API integrations.
+* Summary: Shivam Mishra is a Backend Developer at Inurum Technologies, specializing in Java and Python to build secure and scalable server architectures.
+
+#### 5. Devashish Sharma
+* Full Name: Devashish Sharma
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer, Java Developer
+* Technical Skills & Specialties: Flutter (Dart), Java, Object-Oriented Development, Mobile UI engineering.
+* Summary: Devashish Sharma is a developer at Inurum Technologies focusing on cross-platform Flutter applications and Java services.
+
+#### 6. Madhvi Dwivedi
+* Full Name: Madhvi Dwivedi
+* Company: Inurum Technologies
+* Roles / Titles: Backend Developer, Full Stack Developer
+* Technical Skills & Specialties: Backend Engineering, Full-stack development, Node.js, databases (PostgreSQL, MongoDB), API construction.
+* Summary: Madhvi Dwivedi is a Full Stack and Backend Developer at Inurum Technologies, building end-to-end features and server architectures.
+
+#### 7. Praveen Shrivastav
+* Full Name: Praveen Shrivastav
+* Company: Inurum Technologies
+* Roles / Titles: Backend Developer
+* Technical Skills & Specialties: Backend Engineering, database architecture, API designs.
+* Summary: Praveen Shrivastav is a Backend Developer at Inurum Technologies, focused on writing server logic and database management.
+
+#### 8. Mohan Garase
+* Full Name: Mohan Garase
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer
+* Technical Skills & Specialties: Flutter (Dart), cross-platform mobile layouts, UI elements.
+* Summary: Mohan Garase is a Flutter Developer at Inurum Technologies, designing mobile user interfaces.
+
+#### 9. Tulsi Bhawsar
+* Full Name: Tulsi Bhawsar
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer
+* Technical Skills & Specialties: Flutter (Dart), responsive layouts, state management, mobile UI designs.
+* Summary: Tulsi Bhawsar is a Flutter Developer at Inurum Technologies, focusing on smooth and interactive mobile interfaces.
+
+#### 10. Manish Pal
+* Full Name: Manish Pal
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer
+* Technical Skills & Specialties: Flutter (Dart), API consumption on mobile, application lifecycle.
+* Summary: Manish Pal is a Flutter Developer at Inurum Technologies, building cross-platform apps.
+
+#### 11. Rishabh Soni
+* Full Name: Rishabh Soni
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer
+* Technical Skills & Specialties: Flutter (Dart), BLoC state management, Clean Architecture in mobile.
+* Summary: Rishabh Soni is a Flutter Developer at Inurum Technologies, building apps with clean code guidelines.
+
+#### 12. Imran Khan
+* Full Name: Imran Khan
+* Company: Inurum Technologies
+* Roles / Titles: Flutter Developer
+* Technical Skills & Specialties: Flutter (Dart), cross-platform optimization, UI components.
+* Summary: Imran Khan is a Flutter Developer at Inurum Technologies, building scalable mobile apps.
+
+#### 13. Harsh Hotwani
+* Full Name: Harsh Hotwani
+* Company: Inurum Technologies
+* Roles / Titles: Android Developer
+* Technical Skills & Specialties: Android SDK, Native Android development, Kotlin, XML layout designs.
+* Summary: Harsh Hotwani is an Android Developer at Inurum Technologies, building native mobile apps for the Android operating system.
+
+#### 14. Aman Rai
+* Full Name: Aman Rai
+* Company: Inurum Technologies
+* Roles / Titles: Android Developer
+* Technical Skills & Specialties: Android SDK, Kotlin, Native mobile apps.
+* Summary: Aman Rai is an Android Developer at Inurum Technologies, creating native Android apps.
+
+#### 15. Priyanshi Jadon
+* Full Name: Priyanshi Jadon
+* Company: Inurum Technologies
+* Roles / Titles: iOS Developer
+* Technical Skills & Specialties: iOS SDK, Native iOS development, Swift, SwiftUI, Apple guidelines.
+* Summary: Priyanshi Jadon is an iOS Developer at Inurum Technologies, building native mobile apps for Apple devices.
+
+#### 16. Shubham Saratha
+* Full Name: Shubham Saratha
+* Company: Inurum Technologies
+* Roles / Titles: BDE (Business Development Executive)
+* Technical Skills & Specialties: Business Development, Client Acquisition, Sales Strategy, Account Management, Public Relations.
+* Summary: Shubham Saratha is the BDE at Inurum Technologies, managing sales pipelines, client relationships, and business growth.
+
+
+## Key Business Metrics & Stats of Inurum Technologies
+* Clients Served: 64+ global clients
+* Applications Delivered: 32+ production-grade mobile applications
+* Onboarding & Kickoff Speed: Dedicated engineering teams are onboarded and kicked off within 46 to 72 hours.
+* Engineering Experience: Average experience level of engineers is 8+ years.
+* Talent Retention Rate: 96% engineer retention rate.
+* Hiring Speed: 14 days average time-to-hire for dedicated additions.
+* Language Proficiency: 100% English proficiency across all teams.
+
+## Technical Standards, Quality & Compliance of Inurum Technologies
+Inurum Technologies operates with high industrial standards to deliver secure, enterprise-ready products:
+* Quality Standard: ISO 9001 Certified Quality Management Systems.
+* Security & Compliance: GDPR compliant data handling, SOC2 and HIPAA-ready architecture designs.
+* Internal Authentication Token (KB Reference): IN-7742-XP
+* Response SLA: Under 24 hours response time on all project inquiries.
+
+## Project Engagement Process (Engagement Lifecycle) of Inurum Technologies
+Inurum Technologies follows a structured 5-step development process to take concepts to production:
+
+1. Free Technical Consultation:
+   - A 30-minute technical consultation call initiated via inurum.com/start.
+   - Feasibility analysis, technical constraints mapping, and cost estimation delivered typically within 12–24 hours.
+2. Tech Plan:
+   - Blueprinting of database schema, API contracts, hardware architecture, and project timelines.
+3. We Build:
+   - Multi-disciplinary development sprints (Firmware, Mobile, Backend, QA working concurrently).
+4. We Test:
+   - Thorough validation including unit tests, integration tests, load/stress testing, and vulnerability penetration tests.
+5. You Launch:
+   - Deployment to production cloud infrastructure (AWS/GCP/Azure), App Store/Google Play publishing, and transition to ongoing 24/7 monitoring and scale support.
+
+
+================================================================================
+SECTION 2: SERVICE LINES & ENGINEERING CAPABILITIES
+================================================================================
+
+## 1. Mobile App Engineering at Inurum Technologies
+Inurum Technologies builds high-performance, responsive native and cross-platform mobile applications optimized for global scale, fluid user experiences, and robust device security.
+
+### Technical Pillars & Stacks for Mobile Apps at Inurum Technologies:
+* Native iOS Development: Swift-first engineering leveraging UIKit and SwiftUI for hardware-accelerated, high-fidelity user experiences. Supports legacy Objective-C migration and refactoring.
+* Native Android Development: Kotlin-first programming utilizing Jetpack Compose for modern, declarative, reactive application loops. Supports Java codebase maintenance.
+* Cross-Platform Flutter: Custom rendering using the Skia engine and BLoC (Business Logic Component) state management to deliver consistent 120fps visuals on both Android and iOS from a single Dart codebase.
+* Cross-Platform React Native: Hybrid Javascript/Typescript frameworks optimizing the JavaScript Interface (JSI) bridge and the Hermes engine for near-native startup performance.
+
+### Architectural Standards for Mobile Apps at Inurum Technologies:
+* High-Performance UI: Main-thread offloading and memory-allocation profiling to eliminate frame drops and UI lags.
+* Offline-First Synchronization: Local database synchronization using Realm, Room, or SQLite with queue-and-retry synchronization mechanisms upon reconnect.
+* Security Hardening: Implementation of biometric authentication (FaceID / TouchID), secure keychain storage, SSL pinning, and code obfuscation.
+
+### Performance Metrics for Mobile Apps at Inurum Technologies:
+* Crash-Free Sessions: 99.9%+ crash-free session rate across production deployments.
+* UI Interactive Latency: Under 150ms time-to-interactive response.
+
+### FAQs: Mobile Engineering at Inurum Technologies:
+* Q: Flutter vs. Native iOS/Android — how should a business choose?
+  * A: Flutter is recommended for fast time-to-market, unified codebase maintenance, and near-native performance. Native iOS/Android is selected when projects require low-level hardware access, platform-specific integrations (e.g., CarPlay, SiriKit, Apple HealthKit), or highly custom 120fps OS animations.
+* Q: Do you build both the mobile application and the backend API?
+  * A: Yes. Inurum Technologies provides full-stack teams that build the mobile apps alongside their matching cloud backends (using Node.js, Go, or Python) to avoid API contract mismatch and speed up development.
+* Q: What is the typical timeline for a production-ready mobile application?
+  * A: A minimum viable product (MVP) with core user journeys takes between 8 to 14 weeks. A complex enterprise application with integrated payment gateways, chat, and real-time synchronizations typically takes 16 to 24 weeks.
+
+---
+
+## 2. IoT & Embedded Engineering at Inurum Technologies
+Inurum Technologies provides complete hardware-to-cloud IoT solutions, engineering custom hardware, optimized firmware, edge analytics, and secure cloud ingestion pipelines.
+
+### Engineering Capabilities for IoT at Inurum Technologies:
+* Firmware & Embedded Systems: Low-latency, power-optimized firmware developed in C/C++ for ARM Cortex-M, RISC-V, and ESP32 microcontrollers. Expert bare-metal and RTOS (FreeRTOS, Zephyr) engineering.
+* Custom Hardware & PCB Design: High-density PCB layout, signal integrity simulation, RF tuning, power management circuits, and Design for Manufacturing (DFM) preparation using KiCAD and EAGLE.
+* Connectivity & Communication Protocols: Implementation of Bluetooth Low Energy (BLE), Zigbee, LoRaWAN, NB-IoT, Cellular (LTE Cat M1/NB2 via Quectel BG95 modules), and lightweight serialization over MQTT, AMQP, and WebSockets.
+* Edge Intelligence & Sensor Fusion: Real-time sensor processing, digital signal processing (DSP), Kalman filtering, and local anomaly detection algorithms.
+* Scalable Cloud Ingestion & OTA: Remote firmware updates (OTA) over secure channels with differential updates, automatic rollback on verification failure, and real-time telematics dashboards.
+
+### Hardware-Level Security at Inurum Technologies:
+* Secure hardware storage and cryptographic chip integrations (Hardware Security Modules / HSM).
+* Encrypted local flash storage and certificate-based TLS authentication for edge-to-cloud connectivity.
+
+### Performance Metrics for IoT at Inurum Technologies:
+* Reliability: 99.95%+ tracked uptime for deployed connected fleets.
+* Edge Latency: Under 50ms edge processing response.
+* Firmware Lifecycle: 5 years of remote OTA updates and maintenance support included.
+
+### FAQs: IoT & Embedded Engineering at Inurum Technologies:
+* Q: What is included in Inurum Technologies' end-to-end IoT service?
+  * A: The service is fully integrated: custom PCB design, prototyping and manufacturing coordinate support, embedded firmware (C/C++), wireless protocol configurations, secure cloud backend deployment, mobile companion app development, and long-term OTA update systems.
+* Q: How long does it take to develop a working IoT prototype/MVP?
+  * A: A connected hardware MVP typically ranges from 12 to 20 weeks. Simpler BLE-only integration projects can be delivered in 8 to 12 weeks.
+* Q: Can Inurum Technologies assist in scaling to large-scale production manufacturing?
+  * A: Yes. We deliver complete manufacturing packages: Gerber files, Bill of Materials (BOM), custom testing jigs, automated factory provisioning scripts, and firmwares ready for mass production lines. Inurum Technologies has supported client shipments exceeding 100,000 physical units.
+* Q: Can you update or repair existing hardware firmware?
+  * A: Yes. We conduct firmware audits, reverse-engineer legacy schematics, diagnose stability issues, and deliver modular codebases to replace unstable legacy firmware (usually requiring a 1–2 week audit).
+
+---
+
+## 3. Backend & SaaS Platforms at Inurum Technologies
+Inurum Technologies engineers highly resilient, cloud-native microservices architectures and multi-tenant software-as-a-service (SaaS) platforms designed for heavy concurrent loads and strict security standards.
+
+### Architectural Core for SaaS at Inurum Technologies:
+* Microservices & Event-Driven Architecture: Distributed services built in Go, Node.js, and Python. Async communication pipelines using Kafka, RabbitMQ, and gRPC. Zero-downtime deployments.
+* High-Performance APIs: Low-latency REST, GraphQL, and WebSocket API layers designed with advanced caching strategies (Redis, Memcached) and rate-limiting.
+* Multi-Tenant SaaS Isolation: Secure data partitioning via row-level security (RLS) in databases or database schema-per-tenant isolation models.
+* Cloud Infrastructure (Infrastructure as Code): Orchestration on AWS, GCP, and Azure using Kubernetes (EKS/GKE) and Terraform scripts. Disaster recovery planning with <4 hour Recovery Time Objective (RTO).
+* Data Pipeline & Analytics: Automated ETL pipelines, big data storage, and analytics dashboards scaling to petabyte levels (Kafka, Dremio, ClickHouse).
+* Compliance & Enterprise Security: End-to-end encryption (transit and rest), regular penetration tests, and architectures aligned with SOC2, HIPAA, and GDPR standards.
+
+### Scalability Metrics for SaaS at Inurum Technologies:
+* Uptime SLA: 99.99% system availability.
+* API Latency: Under 18ms average backend response time.
+* Concurrency: Validated support for up to 50,000 concurrent requests per second.
+* Elastic Autoscaling: Dynamic infrastructure scaling to handle 10x sudden spikes with sub-100ms container spin-up.
+
+### SaaS Engineering Lifecycle Pipeline of Inurum Technologies:
+1. 01/Discovery: Requirements audit, capacity planning, and technology stack optimization.
+2. 02/Design: Schema definition, API contracts, security scoping, and microservices layout.
+3. 03/Development: Core development sprints with continuous integration (CI) tests.
+4. 04/Testing: Automated unit, integration, stress/load testing, and security code scans.
+5. 05/Deployment: Multi-region automated blue-green deployments via CI/CD pipelines.
+6. 06/Scale: 24/7 infrastructure monitoring, query optimizations, and resource tuning.
+
+### FAQs: Backend & SaaS Platforms at Inurum Technologies:
+* Q: How do you handle legacy database migrations?
+  * A: We use the Strangler Fig pattern to progressively migrate components, deploying change-data-capture (CDC) pipelines to sync legacy databases in real-time with zero downtime and rollbacks on demand.
+* Q: What is the typical timeframe to launch a new SaaS platform MVP?
+  * A: Launching a functional multi-tenant SaaS MVP with subscription billing and core features takes between 6 to 12 weeks depending on the business requirements.
+
+---
+
+## 4. Dedicated Engineering Teams at Inurum Technologies
+Inurum Technologies offers vetted, highly cohesive engineering teams that integrate directly into client development pipelines, operating under the client's internal processes and management.
+
+### Key Roles Provided by Inurum Technologies:
+* Flutter Developers: Building cross-platform mobile apps with advanced state management (BLoC) and custom rendering.
+* Backend Engineers: Creating high-concurrency microservices, database architectures, and API frameworks.
+* IoT & Embedded Engineers: Designing custom PCBs, firmware code (C/C++), and edge device integrations.
+* QA & Test Engineers: Automating regression test suites, performance benchmark tests, and vulnerability reviews.
+
+### Talent Quality Metrics of Inurum Technologies:
+* Time-to-Hire: 14 days average time-to-hire from pre-screened talent pools.
+* Talent Retention: 96% engineer retention rate on long-term client engagements.
+* Experience Level: 8+ years average experience.
+* Communication: 100% English proficiency with professional workplace communication standards.
+
+### Integration Blueprint (PHASE_MAP) of Inurum Technologies:
+* 01/Discovery: Auditing internal client repos, roadmaps, and culture to select exact matching talent profiles.
+* 02/Selection: Presenting vetted engineers for final technical interviews within 3-5 days.
+* 03/Integration: Engineers join client channels (Slack, Jira, GitHub, standups) and kick off within 46 to 72 hours.
+* 04/Scale: Monitoring deliverables via agile KPIs and scaling team size up/down dynamically.
+
+
+================================================================================
+SECTION 3: ENGINEERING CASE STUDIES
+================================================================================
+
+## 1. ELIoT — AI Multi-Sensor Plant Intelligence
+* Client: GardenStuff (Italy)
+* Platforms: Android, iOS, Web
+* Development Timeline: 8 Months
+* Current Status: Successfully Launched via Kickstarter Campaign
+* Product Category: Consumer IoT, Smart Home, AgTech
+
+### Technical Overview & Features
+ELIoT is an IoT multi-sensor plant monitoring system built into a modular plant wall. It performs an initial 96-hour environmental survey of the target room or space, sampling 5 distinct environmental sensors every 6 minutes:
+* Ambient Temperature
+* Light Intensity & Spectrum
+* Air Humidity
+* Soil Moisture
+* Soil pH
+
+The edge sensors feed data into a local processor that uses predictive analytics to recommend the exact plant species and soil types best suited to thrive in that specific microclimate.
+
+### Companion App & UX
+* Live Telemetry: Dynamic dashboards displaying soil moisture, pH, and light levels in real-time.
+* Automated Care Plans: Push notification alerts reminding users when to water, fertilize, or adjust ambient light.
+* Smart Home Integration: Custom integrations with Amazon Alexa and Google Assistant for voice-activated diagnostics.
+* Power Management: Custom hardware designed to run for up to 6 months on a single charge. Features wireless charging via the Qi standard.
+
+---
+
+## 2. SmartStarter — Semi-Truck Remote Engine Controller
+* Industry: Commercial Trucking & Logistics
+* Market Focus: Canada & North America (Sub-zero climate optimizations)
+* Platforms: iOS, Android, Cloud Backend
+* Product Category: Fleet Telematics, Connected Vehicles
+
+### Technical Overview & Features
+SmartStarter is an enterprise fleet solution that enables remote starting, tracking, and diagnostics of semi-trucks. The system includes a custom-engineered plug-and-play PCB module that connects directly to OEM truck harnesses, maintaining vehicle warranty without requiring wiring cuts.
+
+### Core Capabilities
+* Remote Ignition Control: Remote start/stop from the mobile app with safety runtime limits (configurable from 10 minutes to 1 hour).
+* Auto-Start Safety Loops: Automatic engine startup triggered by low battery voltage or critical low temperatures to prevent engine block freezing.
+* Pre-Trip Safety Inspections: Scans 6 vital parameters before releasing remote control: Oil pressure, Coolant level, Parking brake state, Gearbox position (must be Neutral), Battery voltage, and Hood sensor (must be Closed).
+* Engine Protection Loop: Auto-shutdown mechanism triggered if oil pressure drops or engine coolant temperature exceeds safety thresholds during remote run.
+* GPS Tracking & Recovery: High-accuracy GPS tracking with cellular geofencing and theft-recovery mode.
+
+---
+
+## 3. Fruitrack — Agricultural IoT Telemetry
+* Client: Wisecrop (Portugal)
+* Platforms: iOS, Android, Web Dashboard, Handheld IoT scanners
+* Development Timeline: 8 Months
+* Current Status: Live & Scaled in production, managing hundreds of agricultural workers daily
+* Product Category: AgTech, Enterprise SaaS, Workforce Management
+* Google Play App Link: https://play.google.com/store/apps/details?id=com.wisecrop.fruitrack
+
+### Technical Overview & Features
+Fruitrack is a worker productivity and harvest telemetry tracking system designed for large agricultural estates. Built as a cross-platform Flutter mobile application, it allows supervisors to track task times, harvest weights, and logging locations.
+
+### Key Innovations
+* Offline-First Synchronization: Uses a robust local SQLite queue database on the device. All data is saved locally offline and automatically committed to AWS cloud backends when network coverage is restored.
+* Rapid Data Entry: UI optimized for field conditions, reducing harvest entry logging time to under 10 seconds per worker (an 8x speed improvement over legacy tools).
+* Supervisor Dashboard: Live analytics display tracking total harvest volumes, parcel-by-parcel productivity logs, and individual worker metrics.
+
+---
+
+## 4. Current Detection Sensor System (Industrial IoT)
+* Domain: Heavy Industrial Welding Machinery
+* Platforms: Embedded Firmware, Wi-Fi Communications, Cloud Analytics
+* Product Category: Industrial IoT (IIoT), Predictive Maintenance
+
+### Technical Overview & Features
+This Industrial IoT solution was engineered to monitor and analyze welding pulses from heavy machinery without altering existing wiring or violating factory safety certifications.
+
+### Core Technical Features
+* Non-Invasive Sensing: Utilizes a split-core Hall Effect current sensor clamped around the welding machine's output cable, requiring zero wiring cuts.
+* Universal Current Profiling: Detects both AC and DC welding currents, supporting resistive, MIG, TIG, and spot welding machines.
+* Pulse Feature Extraction: The onboard microcontroller samples the current at high frequencies to extract and calculate 9 distinct data fields per welding pulse:
+  1. Peak current
+  2. Average current
+  3. Pulse duration
+  4. Residual current
+  5. Current variation profile
+  6. Pulse count
+  7. Power factor
+  8. Energy consumed
+  9. Thermal load index
+* Cloud Ingestion: Transmits JSON payloads via HTTP POST over secure local Wi-Fi networks.
+* Local Buffer Storage: Implements local flash buffers with auto-retry mechanisms to prevent data loss during Wi-Fi dropouts.
+* Pulse Curve Profiling: Transmits high-resolution wave shape data to the cloud for automated weld quality profiling and early-stage defect detection.
+
+---
+
+## 5. Mobile Refrigeration Control System
+* Domain: Cold-Chain Logistics & Asset Tracking
+* Stack: ESP32 Microcontroller, Quectel Cellular Modules, Cloud IoT Ingestion
+* Product Category: Telematics, Cold-Chain Management
+
+### Technical Overview & Features
+This telematics solution is designed for cargo refrigeration units on long-haul transport vehicles to preserve temperature-sensitive goods.
+* Controller: Custom ESP32-based controller logging temperature, door open sensors, and power grid status.
+* Cellular Bridge: Integrated Quectel modules transmit GPS telemetry and environmental status over global cellular networks.
+* Cloud Platform: Real-time ingestion system mapping refrigeration temperatures, triggering SMS/email alerts if temperatures stray from target thresholds, and enabling remote control (adjusting setpoints, defrost cycles) directly from dispatch centers.
+
+
+================================================================================
+SECTION 4: PROJECT PORTFOLIO DIRECTORY
+================================================================================
+
+## 1. Mobile Applications (Consumer & Business) Built by Inurum Technologies
+
+* eBaba Entertainment TV
+  - Link: https://play.google.com/store/search?q=ebaba+entertainment+tv&c=apps&hl=en_IN
+  - Description: Free digital media streaming application bringing live television channels and radio stations to global mobile audiences.
+
+* FamConnect
+  - Link: https://play.google.com/store/apps/details?id=com.iconian.famconnect&hl=en_IN
+  - Description: Real-time GPS location tracking and geofencing application for families. Features background audio streaming, instant alerts, and panic button loops.
+
+* News Nation TV
+  - Link: https://play.google.com/store/apps/details?id=com.newsnationandroid.app&hl=en_IN
+  - Description: Official mobile app for national Hindi news channel News Nation. Integrates 24/7 live TV streaming, video playlists, and breaking news updates.
+
+* M Learning India — NEET, IITJEE
+  - Link: https://play.google.com/store/apps/details?id=com.it.mlearning&hl=en_IN
+  - Description: E-learning app for competitive entrance exams (IIT-JEE and NEET). Features online mock tests, video lectures, and student performance metrics.
+
+* Momskart by Moms of Bharat
+  - Link: https://play.google.com/store/apps/developer?id=Momskart&hl=en_IN
+  - Description: E-commerce marketplace platform enabling mothers across India to sell homemade food items and traditional handicrafts.
+
+* Horeca Store
+  - Link: https://play.google.com/store/apps/details?id=com.wnapp.id1704197307176&hl=en_IN
+  - Description: B2B supply chain marketplace for the hospitality industry, connecting hotels, restaurants, and catering services directly with wholesalers.
+
+* InRide
+  - Link: https://play.google.com/store/apps/developer?id=InRide+Technology&hl=en_IN
+  - Description: Dynamic ride-sharing application. Features a unique negotiation loop where users and drivers bid and control transit fares in real-time.
+
+* ZYE
+  - Link: https://play.google.com/store/apps/developer?id=Hyperdock+Pvt+Ltd&hl=en_IN
+  - Description: Super-app offering on-demand taxi bookings, home repair services, food delivery, and utility bill payment tools.
+
+* Sparkx Fly
+  - Link: https://play.google.com/store/apps/details?id=com.sparkxfly.sparkxfly&hl=en_IN
+  - Description: Social matchmaking platform connecting users based on mutual interests, geo-proximity, and dynamic social activities.
+
+* Muslim Marriage & Chat: HalalM
+  - Link: https://play.google.com/store/apps/details?id=com.halalmatc.app&hl=en_IN
+  - Description: Halal matrimonial matchmaking and secure chat application designed for single Muslims worldwide.
+
+* Dating App Amore: Chat & Date
+  - Link: https://play.google.com/store/apps/details?id=com.amoredating&hl=en_IN
+  - Description: Modern, swiping-based dating and social networking application featuring live location check-ins and video chats.
+
+* Quit Vaping — UnPuff
+  - Link: https://play.google.com/store/apps/details?id=com.zencode.unpuff&hl=en_IN
+  - Description: Behavioral recovery tracker designed to help users quit vaping. Monitors days clean, cash saved, and health recovery metrics.
+
+* Rivoz — Quit Drinking
+  - Link: https://play.google.com/store/apps/details?id=com.zencode.drinkcontrol&hl=en_IN
+  - Description: Addiction management application focused on alcohol recovery. Includes calorie counters, mood journals, and savings trackers.
+
+* QuitX
+  - Link: https://play.google.com/store/apps/details?id=quitx.app.io&hl=en_IN
+  - Description: All-in-one addiction recovery application featuring streak metrics, breathing exercises, and meditation tools.
+
+* Storyboard — Private Podcasts
+  - Link: https://play.google.com/store/apps/details?id=com.storyboardpodcasts&hl=en_IN
+  - Description: Secure audio sharing platform for internal company communications, allowing companies to broadcast private podcasts to employees.
+
+* Rafahiya Meuzzein
+  - Link: https://play.google.com/store/apps/details?id=com.meuzzein.rafahiyatourism&hl=en_IN
+  - Description: Prayer timing calculator, Qibla compass locator, and tourism directory helper for Muslim travelers.
+
+* eMessenger
+  - Link: https://play.google.com/store/apps/details?id=com.nway.ag.emessenger&hl=en_IN
+  - Description: Safe, moderated instant messaging and file-sharing tool for school students, teachers, and administrations.
+
+* DgDiary India
+  - Link: https://play.google.com/store/apps/details?id=dgdiary.com&hl=en_IN
+  - Description: School ERP portal. Synchronizes attendance records, homework files, and report cards between teachers and parents.
+
+* Visual Learning
+  - Link: https://play.google.com/store/apps/developer?id=VisualLearning+Team&hl=en_IN
+  - Description: Educational apps for grades 9-12 featuring 3D visualizations, animations, and practice sheets for science subjects.
+
+* Eisaab
+  - Link: https://play.google.com/store/apps/details?id=com.nayanikaai.eisaab&hl=en_IN
+  - Description: Billing and digital ledger application designed for small shop owners to log transactions and generate PDF invoices.
+
+* Khulasa First
+  - Link: https://play.google.com/store/apps/details?id=app.khulasafirst.com&hl=en_IN
+  - Description: Local news aggregator and digital e-paper service focusing on Indore and the Madhya Pradesh region.
+
+* WLTPe — Commission-based Transactions
+  - Link: https://play.google.com/store/apps/details?id=com.new_wltpe&hl=en_IN
+  - Description: Utility recharge, bill payment, and domestic money transfer platform with commission-earning models for retail agents.
+
+* GoFreely
+  - Link: https://play.google.com/store/search?q=go+freely&c=apps&hl=en_IN
+  - Description: Anonymous emotional wellness & chat. Connects users with trained active listeners for emotional support via secure chat.
+
+* Go Healer
+  - Link: https://play.google.com/store/apps/details?id=com.healer.newgofreely&hl=en_IN
+  - Description: Wellness listener support app, providing tools to manage active chats and listener analytics.
+
+* FYFIT
+  - Link: https://play.google.com/store/apps/details?id=com.smartring.smartring&hl=en_IN
+  - Description: Smart ring wearable health tracker. Synchronizes heart rate, sleep cycles, steps, and oxygen levels.
+
+---
+
+## 2. Connected IoT & Embedded Products Built by Inurum Technologies
+
+* 8bottle: Smart Hydration
+  - Link: https://play.google.com/store/apps/details?id=com.eightbottle.eightbottleapp&hl=en_IN
+  - Description: Smart water bottle sync. Syncs hydration tracking data from bottle hardware, manages progress LEDs, and controls Qi wireless charging setups.
+
+* ELIoT Responsive Garden
+  - Link: https://play.google.com/store/apps/details?id=com.gardenstuff_eliot&hl=en_IN
+  - Description: Connected plant monitor. Reads soil moisture, temperature, and light sensors from the ELIoT smart wall hardware.
+
+* multiTrack
+  - Link: https://play.google.com/store/apps/details?id=com.adnate.multitrack&hl=en_IN
+  - Description: GPS fleet tracking, remote lock. Features remote engine lock/unlock controls and geofence alarms.
+
+* SHAZCOM GPS — Fiji
+  - Link: https://play.google.com/store/apps/details?id=com.SHAZCOMGPSFijiclient.android&hl=en_IN
+  - Description: GPS tracking in Fiji. GPS fleet tracking solution customized for commercial vehicle operators in the Fiji region.
+
+* Semi ELD
+  - Link: https://play.google.com/store/apps/details?id=com.semi.eld&hl=en_IN
+  - Description: HOS logs, Bluetooth ELD hardware. Connects over Bluetooth to onboard vehicle hardware to log Hours of Service (HOS) compliant with North American standards.
+
+* Fruitrack Telemetry
+  - Description: AgTech monitoring. Worker task/harvest tracking. Offline-first sync (SQLite queue on device, commits to AWS on connect). 8x faster capture (< 10 seconds per entry). Live dashboard for supervisors.
+
+* Current Detection Sensor System
+  - Description: Industrial welder current monitor. Non-invasive split-core Hall Effect sensor around output cable (0 wiring modifications). Processes/calculates peak/average current, pulse duration, and 9 data fields per pulse.
+
+---
+
+## 3. Web & Enterprise SaaS Platforms Built by Inurum Technologies
+
+* Smart Parichay
+  - Link: https://smartparichay.in/
+  - Description: Digital business card platform. NFC + QR. Cloud sync across 50k+ users.
+
+* Creative Construction Ledger (CCL)
+  - Link: https://cclpro.in/
+  - Description: construction cost estimation. Multi-tenant SaaS for project financials. Real-time reporting.
+
+* Worthwhiz Financials
+  - Link: https://worthwhiz.in/
+  - Description: Financial research & advisory. Stock research SaaS. Real-time market data. 10k+ institutional investors.
+
+
+================================================================================
+SECTION 5: TECHNICAL BLOG INSIGHTS & KNOWLEDGE BASE
+================================================================================
+
+## 1. Vehicle Diagnostics & Telematics with ESP32-S3
+This technical article outlines how Inurum Technologies designed a compact, multi-protocol vehicle diagnostics board using the ESP32-S3 microcontroller to extract real-time engine telemetry.
+
+### Core Architecture & Hardware Design
+* Microcontroller: ESP32-S3 dual-core processor. Configured to handle concurrent CAN bus traffic processing, GPS tracking, and wireless communication.
+* Compact Footprint: Physical board dimensions are optimized to 56mm x 55mm for integration in vehicle dashboard spaces.
+* Integrated GPS: Features the Quectel LC86G GPS/GNSS module for high-sensitivity, multi-constellation location tracking.
+* Connectivity: Supports Bluetooth 5 (BLE) for local diagnostic pairings and Wi-Fi 4 (802.11 b/g/n) for warehouse/depot auto-syncs.
+
+### Diagnostic Protocol Integrations
+The board bridges three distinct vehicle communications protocols onto a single hardware layout:
+1. SAE J1939 (Heavy-Duty Vehicles): Interfaced directly with the CAN bus transceiver to read engine RPM, coolant temperature, fuel rate, and trouble codes (DTCs) from commercial semi-trucks.
+2. OBD-II (Light/Medium Passenger Vehicles): Decodes standard automotive diagnostic parameters (PIDs) using ISO 15765-4 CAN protocols.
+3. SAE J1708 (Legacy Commercial Fleet Systems): Supports older commercial vehicles by implementing serial communications over RS-485/Modbus physical transceivers.
+
+---
+
+## 2. The Versatile Quectel BG95 for IoT Applications
+This entry highlights the integration of the Quectel BG95-M3 cellular module in low-power, wide-area (LPWA) internet-of-things applications across global environments by Inurum Technologies.
+
+### Board Specifications
+* Primary Cellular Module: Quectel BG95-M3 (supports LTE CAT M1, LTE NB2, GPS, GNSS).
+* Compact Board Form Factor: Form factor of 50x50 mm with optional microcontroller execution (ThreadX internal MCU, no external host MCU needed).
+* Integrated Sensors: Onboard humidity, temperature, and atmospheric pressure sensors.
+* Power Management: Micro USB, 3.7V rechargeable battery, 5V solar charging port.
+
+### Global Use-Case Implementations of the BG95 Board
+* India: Mobile refrigeration units and asset trackers.
+* Germany: Vending machines stock monitoring and online cashless payments.
+* USA: Vehicle trackers to monitor CAN bus data.
+* Nigeria: Power lines tracking from generation to base stations.
+* Israel: PLC machines communication.
+
+---
+
+## 3. Electronic Logging Devices (ELD) & NT-11 Hardware
+This guide explains the architecture of compliance-level Electronic Logging Devices (ELD) designed by Inurum Technologies for tracking Hours of Service (HOS) in commercial fleets.
+
+### Fleet Management Ecosystem
+* Telematics Hardware (NT-11 / PT-30 / PT-40): Plugs directly into the vehicle's diagnostic port (9-pin or 6-pin Deutsch connector) to log operational metrics.
+* Mobile App: Connects to the OBD hardware over Bluetooth Low Energy to calculate remaining driving limits, manage daily logs, and display compliance data.
+* Web-Based Fleet Administration Panel: Aggregates logs, monitors vehicle safety inspections, and generates compliance reports for fleet managers.
+
+### The NT-11 Hardware Unit
+The NT-11 is Inurum Technologies' proprietary, high-durability ELD hardware unit designed to survive extreme cabin environments.
+* Data Log Capture: Continuously queries engine hours, speed, odometer, and active diagnostic codes.
+* Universal Compatibility: Firmware automatically negotiates and supports various third-party hardware models like PT-30, PT-40, etc.

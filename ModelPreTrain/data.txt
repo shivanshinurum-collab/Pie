@@ -1,0 +1,31 @@
+AI AND MACHINE LEARNING PRACTICE DATASET
+
+1. What is Artificial Intelligence?
+Artificial Intelligence is the field of computer science that focuses on creating systems capable of performing tasks that normally require human intelligence.
+
+2. What is Machine Learning?
+Machine Learning is a subset of AI that allows systems to learn from data without being explicitly programmed.
+
+3. What is Deep Learning?
+Deep Learning is a subset of Machine Learning that uses neural networks with many layers.
+
+4. What is a model in AI?
+A model is a mathematical representation trained on data to make predictions or decisions.
+
+5. What is RAG (Retrieval Augmented Generation)?
+RAG is a technique that combines retrieval of external knowledge with generative AI models to produce more accurate responses.
+
+6. What is embedding in NLP?
+Embedding is a way to convert text into numerical vectors so that machines can understand semantic meaning.
+
+7. What is vector database?
+A vector database stores embeddings and allows fast similarity search for AI applications.
+
+8. What is Python used for in AI?
+Python is widely used in AI for data processing, machine learning model building, and deep learning frameworks.
+
+9. What is training data?
+Training data is the dataset used to teach a machine learning model.
+
+10. What is inference in AI?
+Inference is the process of using a trained model to make predictions on new data.
