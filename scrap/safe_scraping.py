@@ -7,12 +7,12 @@ import os
 import hashlib
 import re
 import mimetypes
-
+import io
 
 # ======================
 # CONFIG
 # ======================
-START_URL = "https://inurum.com/"
+START_URL = "https://about.google/"
 MAX_PAGES = 20   # safety limit (change if needed)
 
 HEADERS = {
@@ -21,6 +21,9 @@ HEADERS = {
 
 visited = set()
 data = []
+
+# Keywords to detect copyright/watermarked/licensed images
+COPYRIGHT_KEYWORDS = ["copyright", "watermark", "stock", "shutterstock", "getty", "adobe-stock", "licensed"]
 
 
 # ======================
@@ -59,11 +62,26 @@ def scrape_page(url):
             if text:
                 page_data["paragraphs"].append(text)
 
-        # IMAGES
+        # IMAGES (with copyright filtering)
         for img in soup.find_all("img"):
             src = img.get("src")
+            alt = img.get("alt", "").lower()
+            
             if src:
-                page_data["images"].append(urljoin(url, src))
+                full_url = urljoin(url, src)
+                
+                # Rule 1: Skip if URL or Alt text contains copyright signals
+                if any(keyword in full_url.lower() or keyword in alt for keyword in COPYRIGHT_KEYWORDS):
+                    print(f"[SKIP-HEURISTIC] Skipping suspected copyrighted image: {full_url}")
+                    continue
+                
+                # Rule 2: Check for schema.org properties or rel="license" parents
+                parent_with_license = img.find_parent(attrs={"rel": "license"}) or img.find_parent(attrs={"itemprop": "license"})
+                if parent_with_license:
+                    print(f"[SKIP-HEURISTIC] Skipping image with explicit license link: {full_url}")
+                    continue
+                
+                page_data["images"].append(full_url)
 
         # VIDEOS (YouTube / iframe)
         for iframe in soup.find_all("iframe"):
@@ -120,14 +138,8 @@ def crawl(url):
 
 
 # ======================
-# SAVE OUTPUT
+# SAVE OUTPUT & DOWNLOAD
 # ======================
-# def save():
-#     df = pd.DataFrame(data)
-#     df.to_json(f"{START_URL}.json", indent=2)
-#     print(f"[DONE] Saved to {START_URL}.json")
-
-
 def download_assets(domain):
     assets_dir = f"{domain}_assets"
     if not os.path.exists(assets_dir):
@@ -152,7 +164,8 @@ def download_assets(domain):
 
             try:
                 print(f"[DOWNLOADING] {url}")
-                response = requests.get(url, headers=HEADERS, timeout=15, stream=True)
+                # We fetch the entire content directly to inspect it
+                response = requests.get(url, headers=HEADERS, timeout=15)
                 if response.status_code != 200:
                     print(f"[WARNING] Failed to download {url}: HTTP status {response.status_code}")
                     continue
@@ -165,9 +178,9 @@ def download_assets(domain):
                 root, ext = os.path.splitext(base_name)
 
                 # Guess extension if missing
+                content_type = response.headers.get("content-type", "")
+                mime_type = content_type.split(";")[0].strip()
                 if not ext:
-                    content_type = response.headers.get("content-type", "")
-                    mime_type = content_type.split(";")[0].strip()
                     guess_ext = mimetypes.guess_extension(mime_type)
                     if guess_ext:
                         ext = guess_ext
@@ -181,6 +194,32 @@ def download_assets(domain):
                     hash_val = hashlib.md5(url.encode('utf-8')).hexdigest()
                     root = f"asset_{hash_val}"
 
+                # Rule 3: Post-download metadata check (EXIF check for images)
+                if "image" in mime_type or ext in [".jpg", ".jpeg", ".png", ".tiff"]:
+                    try:
+                        from PIL import Image
+                        from PIL.ExifTags import TAGS
+                        
+                        img = Image.open(io.BytesIO(response.content))
+                        exif_data = img.getexif()
+                        is_copyrighted = False
+                        
+                        for tag_id, value in exif_data.items():
+                            tag_name = TAGS.get(tag_id, tag_id)
+                            if tag_name == "Copyright" or "copyright" in str(value).lower():
+                                is_copyrighted = True
+                                break
+                        
+                        if is_copyrighted:
+                            print(f"[SKIP-EXIF] Skipping image because EXIF metadata contains copyright: {url}")
+                            continue
+                    except ImportError:
+                        # Pillow is not installed, fallback to saving
+                        pass
+                    except Exception as exif_err:
+                        # Failed to parse EXIF (not supported format or corrupted)
+                        pass
+
                 base_name = f"{root}{ext}"
                 dest_path = os.path.join(assets_dir, base_name)
 
@@ -191,9 +230,7 @@ def download_assets(domain):
                     counter += 1
 
                 with open(dest_path, "wb") as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:
-                            f.write(chunk)
+                    f.write(response.content)
                 
                 print(f"[SAVED] {url} -> {dest_path}")
                 downloaded_urls.add(url)
@@ -219,14 +256,9 @@ def save():
 # RUN
 # ======================
 if __name__ == "__main__":
-    print("===== FULL WEBSITE CRAWLER STARTED =====")
+    print("===== SAFE FULL WEBSITE CRAWLER STARTED =====")
     crawl(START_URL)
     save()
     print("===== COMPLETE =====")
-
-
-
-
-
 
 

@@ -12,7 +12,7 @@ import mimetypes
 # ======================
 # CONFIG
 # ======================
-START_URL = "https://inurum.com/"
+START_URL = "https://www.flipkart.com/"
 MAX_PAGES = 20   # safety limit (change if needed)
 
 HEADERS = {
