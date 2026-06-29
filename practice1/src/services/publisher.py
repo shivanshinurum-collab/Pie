@@ -189,3 +189,151 @@ class InstagramPublisherService:
             
         self.db.commit()
         return success
+
+
+class TelegramPublisherService:
+    def __init__(self, db: Session):
+        self.db = db
+        self.bot_token = settings.TELEGRAM_BOT_TOKEN
+        self.chat_id = settings.TELEGRAM_CHAT_ID
+
+    def publish_meme_post(self, meme_id: str, image_path: str, caption: str) -> bool:
+        """Publish meme to Telegram channel."""
+        if not self.bot_token or not self.chat_id:
+            logger.warning("Telegram Bot Token or Chat ID not configured. Skipping Telegram publishing.")
+            return False
+
+        logger.info(f"Publishing Meme {meme_id} to Telegram channel {self.chat_id}...")
+        try:
+            url = f"https://api.telegram.org/bot{self.bot_token}/sendPhoto"
+            
+            if not os.path.exists(image_path):
+                logger.error(f"Local image file not found for Telegram publish: {image_path}")
+                return False
+                
+            with open(image_path, "rb") as photo_file:
+                files = {"photo": photo_file}
+                data = {
+                    "chat_id": self.chat_id,
+                    "caption": caption,
+                    "parse_mode": "HTML"
+                }
+                response = requests.post(url, data=data, files=files, timeout=30)
+                res_data = response.json()
+                
+                if response.status_code == 200 and res_data.get("ok"):
+                    post_id = str(res_data.get("result", {}).get("message_id"))
+                    logger.info(f"Successfully published on Telegram. Message ID: {post_id}")
+                    
+                    log = PublicationLog(
+                        meme_id=meme_id,
+                        platform="telegram",
+                        status="success",
+                        external_post_id=post_id,
+                        error_message=None
+                    )
+                    self.db.add(log)
+                    self.db.commit()
+                    return True
+                else:
+                    error_msg = f"Telegram API error: {res_data}"
+                    logger.error(error_msg)
+                    
+                    log = PublicationLog(
+                        meme_id=meme_id,
+                        platform="telegram",
+                        status="failed",
+                        external_post_id=None,
+                        error_message=error_msg
+                    )
+                    self.db.add(log)
+                    self.db.commit()
+                    return False
+        except Exception as e:
+            error_msg = f"HTTP request failed during Telegram publish: {str(e)}"
+            logger.error(error_msg)
+            
+            log = PublicationLog(
+                meme_id=meme_id,
+                platform="telegram",
+                status="failed",
+                external_post_id=None,
+                error_message=error_msg
+            )
+            self.db.add(log)
+            self.db.commit()
+            return False
+
+
+class TeamsPublisherService:
+    def __init__(self, db: Session):
+        self.db = db
+        self.webhook_url = settings.TEAMS_WEBHOOK_URL
+
+    def publish_meme_post(self, meme_id: str, title: str, summary: str, caption: str) -> bool:
+        """Publish meme to MS Teams channel via Incoming Webhook."""
+        if not self.webhook_url:
+            logger.warning("MS Teams Webhook URL not configured. Skipping MS Teams publishing.")
+            return False
+
+        logger.info(f"Publishing Meme {meme_id} to MS Teams channel...")
+        try:
+            payload = {
+                "@type": "MessageCard",
+                "@context": "http://schema.org/extensions",
+                "themeColor": "7B83EB",
+                "summary": "New AI Meme Published",
+                "title": "📢 New AI News Meme Composed!",
+                "sections": [
+                    {
+                        "activityTitle": title,
+                        "activitySubtitle": summary,
+                        "facts": [
+                            {"name": "Topic", "value": "Meme Generator Output"},
+                            {"name": "Meme Reaction", "value": caption}
+                        ],
+                        "text": f"**Meme Text:**\n\n> {caption}",
+                        "markdown": True
+                    }
+                ]
+            }
+            response = requests.post(self.webhook_url, json=payload, timeout=20)
+            
+            if response.status_code in [200, 201, 202]:
+                logger.info("Successfully published on MS Teams.")
+                log = PublicationLog(
+                    meme_id=meme_id,
+                    platform="msteams",
+                    status="success",
+                    external_post_id="teams_webhook_post",
+                    error_message=None
+                )
+                self.db.add(log)
+                self.db.commit()
+                return True
+            else:
+                error_msg = f"Teams webhook returned status {response.status_code}: {response.text}"
+                logger.error(error_msg)
+                log = PublicationLog(
+                    meme_id=meme_id,
+                    platform="msteams",
+                    status="failed",
+                    external_post_id=None,
+                    error_message=error_msg
+                )
+                self.db.add(log)
+                self.db.commit()
+                return False
+        except Exception as e:
+            error_msg = f"HTTP request failed during MS Teams publish: {str(e)}"
+            logger.error(error_msg)
+            log = PublicationLog(
+                meme_id=meme_id,
+                platform="msteams",
+                status="failed",
+                external_post_id=None,
+                error_message=error_msg
+            )
+            self.db.add(log)
+            self.db.commit()
+            return False

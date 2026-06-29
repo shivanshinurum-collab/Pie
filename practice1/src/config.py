@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     # Social Media / Publishing
     INSTAGRAM_ACCESS_TOKEN: str = ""
     INSTAGRAM_BUSINESS_ACCOUNT_ID: str = ""
+    TELEGRAM_BOT_TOKEN: str = ""
+    TELEGRAM_CHAT_ID: str = ""
+    TEAMS_WEBHOOK_URL: str = ""
     BRAND_LOGO_PATH: str = ""  # Path to brand logo overlaid on memes
     
     # Pipelines Scheduler (in minutes)

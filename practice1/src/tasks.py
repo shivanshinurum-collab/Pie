@@ -240,10 +240,11 @@ def process_single_meme_assets_task(self, meme_id: str):
 
 @celery_app.task(bind=True, max_retries=3, default_retry_delay=180)
 def publish_meme_task(self, meme_id: str, media_url_or_path: str, caption: str, is_video: bool = False):
-    """Step 9: Publish meme directly to Instagram."""
+    """Step 9: Publish meme directly to Instagram, Telegram, and Microsoft Teams."""
     logger.info(f"Starting Celery Task: publish_meme_task for Meme ID: {meme_id}")
     db = SessionLocal()
     try:
+        # 1. Instagram Publisher
         publisher = InstagramPublisherService(db)
         success = publisher.publish_meme_post(
             meme_id=meme_id,
@@ -255,6 +256,50 @@ def publish_meme_task(self, meme_id: str, media_url_or_path: str, caption: str, 
             logger.info(f"Instagram publish completed successfully for Meme ID: {meme_id}")
         else:
             logger.error(f"Instagram publish failed for Meme ID: {meme_id}")
+
+        # 2. Telegram Publisher
+        try:
+            from src.services.publisher import TelegramPublisherService
+            tg_publisher = TelegramPublisherService(db)
+            tg_success = tg_publisher.publish_meme_post(
+                meme_id=meme_id,
+                image_path=media_url_or_path,
+                caption=caption
+            )
+            if tg_success:
+                logger.info(f"Telegram publish completed successfully for Meme ID: {meme_id}")
+            else:
+                logger.warning(f"Telegram publish skipped or failed for Meme ID: {meme_id}")
+        except Exception as tg_err:
+            logger.error(f"Telegram publishing exception: {str(tg_err)}")
+
+        # 3. Microsoft Teams Publisher
+        try:
+            from src.services.publisher import TeamsPublisherService
+            teams_publisher = TeamsPublisherService(db)
+            
+            # Fetch article title and summary for the connector card
+            meme = db.query(Meme).filter(Meme.id == meme_id).first()
+            if meme and meme.article:
+                title = meme.article.title
+                summary = meme.one_line_summary
+            else:
+                title = "New AI Meme"
+                summary = "Meme summary not found"
+                
+            teams_success = teams_publisher.publish_meme_post(
+                meme_id=meme_id,
+                title=title,
+                summary=summary,
+                caption=caption
+            )
+            if teams_success:
+                logger.info(f"MS Teams publish completed successfully for Meme ID: {meme_id}")
+            else:
+                logger.warning(f"MS Teams publish skipped or failed for Meme ID: {meme_id}")
+        except Exception as teams_err:
+            logger.error(f"MS Teams publishing exception: {str(teams_err)}")
+
     except Exception as exc:
         logger.error(f"Error in publish_meme_task: {str(exc)}")
         db.rollback()
