@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: news_meme_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: news_meme_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: news_meme_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: news_meme_web
+    restart: always
+    command: uvicorn src.app:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ..:/app
+      - shared_storage:/app/storage
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/news_meme_db
+      - REDIS_URL=redis://redis:6379/0
+      - LOCAL_STORAGE_DIR=/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: news_meme_worker
+    restart: always
+    command: celery -A src.tasks.celery_app worker --loglevel=info
+    volumes:
+      - ..:/app
+      - shared_storage:/app/storage
+    environment:
+      - ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/news_meme_db
+      - REDIS_URL=redis://redis:6379/0
+      - LOCAL_STORAGE_DIR=/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: news_meme_beat
+    restart: always
+    command: celery -A src.tasks.celery_app beat --loglevel=info
+    volumes:
+      - ..:/app
+      - shared_storage:/app/storage
+    environment:
+      - ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/news_meme_db
+      - REDIS_URL=redis://redis:6379/0
+      - LOCAL_STORAGE_DIR=/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  shared_storage:

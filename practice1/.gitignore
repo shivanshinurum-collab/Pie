@@ -1,0 +1,28 @@
+# Environment and secrets
+.env
+.env.*
+venv/
+env/
+.venv/
+ENV/
+
+# Local databases and logs
+*.db
+*.sqlite
+celerybeat-schedule*
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Storage and test outputs
+storage/
+test_storage/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
