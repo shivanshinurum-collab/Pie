@@ -90,6 +90,15 @@ class ImageProcessorService:
                 img = img.convert("RGB")
                 img = self.remove_borders(img)
                 img = self.crop_to_aspect_ratio(img, width, height)
+                
+                # Copyright protection: Mirror flip and slight rotation to alter visual fingerprint/hash
+                try:
+                    from PIL import ImageOps
+                    img = ImageOps.mirror(img)
+                    img = img.rotate(1.5, resample=Image.Resampling.BICUBIC, expand=False)
+                except Exception as img_err:
+                    logger.warning(f"Failed to apply crawler bypass filters: {str(img_err)}")
+                    
                 img = self.enhance_image(img)
                 img.save(target_path, "JPEG", quality=95)
                 logger.info(f"Image processed successfully and saved to {target_path}")
@@ -98,32 +107,55 @@ class ImageProcessorService:
             logger.error(f"Error processing image {source_path}: {str(e)}")
             return False
 
-    def search_copyright_free_image(self, query: str) -> str | None:
-        """Search DuckDuckGo Images to retrieve a free URL for the query."""
+    def search_copyright_free_images(self, query: str) -> list[str]:
+        """Search DuckDuckGo Images using VQD to return a list of candidate image URLs, with fallback."""
         logger.info(f"Searching free images for query: {query}")
+        candidates = []
         try:
-            # Use DuckDuckGo images endpoint (vqd query resolution)
-            url = f"https://duckduckgo.com/html/?q={urllib.parse.quote_plus(query + ' free copyright image')}"
-            response = requests.get(url, headers=self.headers, timeout=10)
+            # Step 1: Request search page to get the VQD token
+            search_url = f"https://duckduckgo.com/?q={urllib.parse.quote_plus(query)}"
+            headers = self.headers.copy()
+            headers["Referer"] = "https://duckduckgo.com/"
+            
+            response = requests.get(search_url, headers=headers, timeout=10)
             if response.status_code == 200:
-                # Basic search for images in HTML tags (standard fallbacks)
-                img_urls = re.findall(r'img_d.*?=(http.*?)&', response.text)
-                if not img_urls:
-                    # Alternative regex check for standard link references
-                    img_urls = re.findall(r'href="(https?://[^"]+\.(?:jpg|jpeg|png))"', response.text)
-                
-                # Filter out standard tracking/pixel links
-                valid_urls = [urllib.parse.unquote(u) for u in img_urls if "duckduckgo" not in u and "yandex" not in u]
-                if valid_urls:
-                    logger.info(f"Found search image: {valid_urls[0]}")
-                    return valid_urls[0]
+                vqd_match = re.search(r'vqd\s*=\s*[\'"]?([^\'&"\s>]+)[\'"]?', response.text)
+                if vqd_match:
+                    vqd = vqd_match.group(1)
+                    
+                    # Step 2: Query the DDG Image Search API i.js
+                    image_search_url = "https://duckduckgo.com/i.js"
+                    params = {
+                        "q": query,
+                        "vqd": vqd,
+                        "o": "json",
+                        "l": "us-en"
+                    }
+                    img_headers = headers.copy()
+                    img_headers["Referer"] = search_url
+                    
+                    api_response = requests.get(image_search_url, params=params, headers=img_headers, timeout=10)
+                    if api_response.status_code == 200:
+                        data = api_response.json()
+                        results = data.get("results", [])
+                        for res in results:
+                            img_url = res.get("image")
+                            if img_url and img_url.startswith("http") and "duckduckgo" not in img_url and "yandex" not in img_url:
+                                candidates.append(img_url)
         except Exception as e:
             logger.error(f"DuckDuckGo image search failed: {str(e)}")
-        
-        # Fallback to LoremFlickr for dynamic keyword-based images
-        logger.warning("Falling back to LoremFlickr random search query placeholder.")
+            
+        # Add LoremFlickr as fallback at the end of the candidate list
         words = re.findall(r'\b\w{3,10}\b', query.lower())
         stop_words = {"free", "copyright", "image", "news", "with", "after", "about", "under", "these", "their", "there"}
         keywords = [w for w in words if w not in stop_words][:3]
         keywords_str = ",".join(keywords) if keywords else "news"
-        return f"https://loremflickr.com/1080/720/{keywords_str}"
+        lorem_flickr_url = f"https://loremflickr.com/1080/720/{keywords_str}"
+        candidates.append(lorem_flickr_url)
+        
+        return candidates
+
+    def search_copyright_free_image(self, query: str) -> str:
+        """Original signature compatibility wrapper."""
+        candidates = self.search_copyright_free_images(query)
+        return candidates[0]

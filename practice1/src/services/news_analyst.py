@@ -5,6 +5,23 @@ from sqlalchemy.orm import Session
 from src.config import settings, logger
 from src.database import NewsArticle, Meme
 
+def clean_and_extract_json(raw_response: str) -> str:
+    """Extract and clean raw JSON response from markdown blocks or surrounding text."""
+    cleaned = raw_response.strip()
+    if "```json" in cleaned:
+        cleaned = cleaned.split("```json")[1].split("```")[0]
+    elif "```" in cleaned:
+        cleaned = cleaned.split("```")[1].split("```")[0]
+    
+    cleaned = cleaned.strip()
+    # Find matching brace for robustness
+    start_idx = cleaned.find("{")
+    end_idx = cleaned.rfind("}")
+    if start_idx != -1 and end_idx != -1:
+        cleaned = cleaned[start_idx:end_idx + 1]
+    return cleaned
+
+
 # Pydantic schema representing the LLM output structure for news analysis
 class NewsAnalysisResult(BaseModel):
     topic: str = Field(description="The primary high-level topic or domain of the article.")
@@ -17,6 +34,7 @@ class NewsAnalysisResult(BaseModel):
     meme_potential_score: int = Field(description="Score between 0 (not funny) and 100 (meme goldmine).", ge=0, le=100)
     instagram_potential_score: int = Field(description="Score between 0 (boring) and 100 (highly shareable on IG).", ge=0, le=100)
     one_line_summary: str = Field(description="A catchy, concise one-line summary of the news.")
+    rewritten_title: str = Field(description="A completely unique, creative, and highly engaging headline of the news. DO NOT copy the original title word-to-word. Rephrase it significantly to avoid duplicate content copyright/SEO penalties.")
     news_context: str = Field(description="Historical context or background explanation for why this is interesting or controversial.")
     can_become_meme: bool = Field(description="Whether this story can easily translate to a viral graphic meme.")
 
@@ -117,6 +135,7 @@ class NewsAnalystService:
             '  "meme_potential_score": 0-100,\n'
             '  "instagram_potential_score": 0-100,\n'
             '  "one_line_summary": "Catchy headline",\n'
+            '  "rewritten_title": "A completely unique, creative, and rephrased title of the news, not copy-pasted word-to-word.",\n'
             '  "news_context": "Background context details",\n'
             '  "can_become_meme": true | false\n'
             "}"
@@ -170,20 +189,14 @@ class NewsAnalystService:
                 "meme_potential_score": 85,
                 "instagram_potential_score": 80,
                 "one_line_summary": article.title[:100],
+                "rewritten_title": f"BREAKING: Absurd Reality of {article.title[:50]}...",
                 "news_context": article.description or "No content available.",
                 "can_become_meme": True
             })
 
         # Parse and validate the response
         try:
-            # Strip markdown block formatting if present in the LLM response
-            cleaned_response = raw_response.strip()
-            if cleaned_response.startswith("```json"):
-                cleaned_response = cleaned_response[7:]
-            if cleaned_response.endswith("```"):
-                cleaned_response = cleaned_response[:-3]
-            cleaned_response = cleaned_response.strip()
-            
+            cleaned_response = clean_and_extract_json(raw_response)
             data = json.loads(cleaned_response)
             return NewsAnalysisResult(**data)
         except Exception as e:
@@ -200,17 +213,18 @@ class NewsAnalystService:
                 meme_potential_score=20,
                 instagram_potential_score=20,
                 one_line_summary=article.title[:80],
+                rewritten_title=f"Update: {article.title[:80]}",
                 news_context=article.description or "",
                 can_become_meme=False
             )
 
-    def process_pending_articles(self) -> int:
-        """Query and analyze all pending articles in the database."""
+    def process_pending_articles(self, limit: int = 10) -> int:
+        """Query and analyze pending articles in the database."""
         pending_articles = self.db.query(NewsArticle).filter(
             NewsArticle.processing_status == "pending"
-        ).order_by(NewsArticle.popularity_score.desc()).all()
+        ).order_by(NewsArticle.popularity_score.desc()).limit(limit).all()
         
-        logger.info(f"Found {len(pending_articles)} pending articles for AI analysis.")
+        logger.info(f"Found {len(pending_articles)} pending articles for AI analysis (limit: {limit}).")
         
         analyzed_count = 0
         for article in pending_articles:
@@ -227,6 +241,7 @@ class NewsAnalystService:
                         meme_potential_score=analysis.meme_potential_score,
                         instagram_potential_score=analysis.instagram_potential_score,
                         one_line_summary=analysis.one_line_summary,
+                        rewritten_title=analysis.rewritten_title,
                         news_context=analysis.news_context,
                         meme_status="pending"
                     )
@@ -237,10 +252,12 @@ class NewsAnalystService:
                     article.processing_status = "skipped"
                     logger.info(f"Article '{article.title[:40]}' skipped (Meme Potential Score: {analysis.meme_potential_score}).")
                 
+                self.db.commit()
                 analyzed_count += 1
             except Exception as e:
                 logger.error(f"Failed to analyze article {article.id}: {str(e)}")
+                self.db.rollback()
                 article.processing_status = "failed"
+                self.db.commit()
                 
-        self.db.commit()
         return analyzed_count

@@ -14,6 +14,8 @@ Base = declarative_base()
 class GUID(String):
     pass
 
+from sqlalchemy import event
+
 def get_db_engine():
     db_url = settings.DATABASE_URL
     try:
@@ -27,14 +29,24 @@ def get_db_engine():
                 pool_recycle=3600
             )
         else:
-            engine = create_engine(db_url)
+            engine = create_engine(db_url, connect_args={"timeout": 30})
         return engine
     except Exception as e:
         logger.warning(f"Failed to connect to database URL: {db_url}. Falling back to SQLite local db.")
         sqlite_fallback = "sqlite:///local_news_meme.db"
-        return create_engine(sqlite_fallback, connect_args={"check_same_thread": False})
+        return create_engine(sqlite_fallback, connect_args={"check_same_thread": False, "timeout": 30})
 
 engine = get_db_engine()
+
+# Enable WAL mode and synchronous=NORMAL for SQLite to increase concurrency limits
+if not settings.DATABASE_URL.startswith("postgresql"):
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
@@ -81,6 +93,7 @@ class Meme(Base):
     meme_potential_score = Column(Integer, default=0)
     instagram_potential_score = Column(Integer, default=0)
     one_line_summary = Column(Text, nullable=True)
+    rewritten_title = Column(Text, nullable=True)
     news_context = Column(Text, nullable=True)
     meme_status = Column(String(50), default="pending")  # pending, generated, publishing_failed, published
     created_at = Column(DateTime, default=datetime.utcnow)

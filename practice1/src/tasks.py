@@ -1,8 +1,10 @@
 import os
+import hashlib
+import json
 from celery import Celery
 from celery.schedules import crontab
 from src.config import settings, logger
-from src.database import SessionLocal, init_db, NewsArticle, Meme, MemeVariation, MemeCaption, MemeReel
+from src.database import SessionLocal, init_db, NewsArticle, Meme, MemeVariation, MemeCaption, MemeReel, PublicationLog
 from src.services.news_collector import NewsCollectorService
 from src.services.news_analyst import NewsAnalystService
 from src.services.image_processor import ImageProcessorService
@@ -26,16 +28,84 @@ celery_app.conf.update(
 
 # Setup Periodic Scheduler (Celery Beat)
 celery_app.conf.beat_schedule = {
-    "autonomous-news-run-every-15-mins": {
+    "collect-news-every-15-mins": {
         "task": "src.tasks.collect_news_task",
         "schedule": crontab(minute=f"*/{settings.NEWS_CHECK_INTERVAL_MINS}"),
-    }
+    },
+    "analyze-news-every-15-mins": {
+        "task": "src.tasks.analyze_news_task",
+        "schedule": crontab(minute=f"*/{settings.NEWS_CHECK_INTERVAL_MINS}"),
+    },
+    "generate-memes-every-15-mins": {
+        "task": "src.tasks.generate_meme_assets_task",
+        "schedule": crontab(minute=f"*/{settings.NEWS_CHECK_INTERVAL_MINS}"),
+    },
 }
 
 @celery_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Initialize DB tables on startup
     init_db()
+
+def is_image_hash_used(image_path: str) -> bool:
+    """Check if the MD5 hash of this image has been used in previous memes."""
+    if not os.path.exists(image_path):
+        return False
+        
+    hash_md5 = hashlib.md5()
+    try:
+        with open(image_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        img_hash = hash_md5.hexdigest()
+    except Exception as e:
+        logger.error(f"Error computing MD5 for {image_path}: {str(e)}")
+        return False
+    
+    hash_file = os.path.join(settings.LOCAL_STORAGE_DIR, "used_image_hashes.json")
+    if os.path.exists(hash_file):
+        try:
+            with open(hash_file, "r") as f:
+                used_hashes = json.load(f)
+                if img_hash in used_hashes:
+                    return True
+        except Exception as e:
+            logger.error(f"Error reading used image hashes file: {str(e)}")
+            
+    return False
+
+def register_image_hash(image_path: str):
+    """Register the MD5 hash of this image as used."""
+    if not os.path.exists(image_path):
+        return
+        
+    hash_md5 = hashlib.md5()
+    try:
+        with open(image_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        img_hash = hash_md5.hexdigest()
+    except Exception as e:
+        logger.error(f"Error computing MD5 for {image_path}: {str(e)}")
+        return
+    
+    hash_file = os.path.join(settings.LOCAL_STORAGE_DIR, "used_image_hashes.json")
+    used_hashes = []
+    if os.path.exists(hash_file):
+        try:
+            with open(hash_file, "r") as f:
+                used_hashes = json.load(f)
+        except Exception:
+            pass
+            
+    if img_hash not in used_hashes:
+        used_hashes.append(img_hash)
+        try:
+            with open(hash_file, "w") as f:
+                json.dump(used_hashes, f, indent=4)
+            logger.info(f"Registered image hash {img_hash} in registry.")
+        except Exception as e:
+            logger.error(f"Error writing used image hashes file: {str(e)}")
 
 # -------------------------------------------------------------
 # TASK DEFINITIONS
@@ -141,16 +211,35 @@ def process_single_meme_assets_task(self, meme_id: str):
                 image_resolved = img_processor.process_and_optimize(
                     base_image_local_path, base_image_local_path, width=1080, height=720
                 )
+                if image_resolved:
+                    if is_image_hash_used(base_image_local_path):
+                        logger.info(f"Duplicate image hash detected for article URL {article.image_url}. Discarding image.")
+                        image_resolved = False
+                        try:
+                            os.remove(base_image_local_path)
+                        except Exception:
+                            pass
         
         if not image_resolved:
             # Search DDG copyright safe images if article didn't have one
-            search_url = img_processor.search_copyright_free_image(article.title)
-            if search_url:
+            search_urls = img_processor.search_copyright_free_images(article.title)
+            for search_url in search_urls[:5]:
                 downloaded = img_processor.download_image(search_url, base_image_local_path)
                 if downloaded:
                     image_resolved = img_processor.process_and_optimize(
                         base_image_local_path, base_image_local_path, width=1080, height=720
                     )
+                    if image_resolved:
+                        if is_image_hash_used(base_image_local_path):
+                            logger.info(f"Duplicate image hash detected for search URL {search_url}. Discarding image.")
+                            image_resolved = False
+                            try:
+                                os.remove(base_image_local_path)
+                            except Exception:
+                                pass
+                        else:
+                            # Successfully found and optimized a non-duplicate image
+                            break
                     
         if not image_resolved:
             # Generate AI illustration (FLUX/DALL-E) as final fallback
@@ -163,6 +252,9 @@ def process_single_meme_assets_task(self, meme_id: str):
             meme.meme_status = "generation_failed"
             db.commit()
             return
+            
+        # Register the hash of the resolved base image so it won't be used in future posts
+        register_image_hash(base_image_local_path)
             
         # Step B: Perform Image Understanding (if original image exists)
         img_desc = ""
@@ -196,7 +288,7 @@ def process_single_meme_assets_task(self, meme_id: str):
         composed_path = os.path.join(meme_folder, "composed_meme_funny.jpg")
         
         composed_success = meme_compositor.compose_meme(
-            headline=article.title,
+            headline=getattr(meme, 'rewritten_title', None) or article.title,
             subheadline=meme.one_line_summary,
             image_path=base_image_local_path,
             caption=caption_text,
@@ -226,8 +318,14 @@ def process_single_meme_assets_task(self, meme_id: str):
         meme.meme_status = "generated"
         logger.info(f"Meme assets generated successfully for Meme ID: {meme.id}")
         
-        # Trigger Auto Publisher Task for this meme
-        publish_meme_task.delay(meme.id, primary_composed_path, ig_caption_text)
+        # Trigger individual publisher tasks
+        publish_to_instagram_task.delay(meme.id, primary_composed_path, ig_caption_text)
+        publish_to_telegram_task.delay(meme.id, primary_composed_path, ig_caption_text)
+        
+        # MS Teams Title and Summary
+        title = getattr(meme, 'rewritten_title', None) or article.title
+        summary = meme.one_line_summary
+        publish_to_teams_task.delay(meme.id, title, summary, ig_caption_text)
         
         db.commit()
     except Exception as exc:
@@ -239,12 +337,11 @@ def process_single_meme_assets_task(self, meme_id: str):
 
 
 @celery_app.task(bind=True, max_retries=3, default_retry_delay=180)
-def publish_meme_task(self, meme_id: str, media_url_or_path: str, caption: str, is_video: bool = False):
-    """Step 9: Publish meme directly to Instagram, Telegram, and Microsoft Teams."""
-    logger.info(f"Starting Celery Task: publish_meme_task for Meme ID: {meme_id}")
+def publish_to_instagram_task(self, meme_id: str, media_url_or_path: str, caption: str, is_video: bool = False):
+    """Publish meme to Instagram."""
+    logger.info(f"Starting Celery Task: publish_to_instagram_task for Meme ID: {meme_id}")
     db = SessionLocal()
     try:
-        # 1. Instagram Publisher
         publisher = InstagramPublisherService(db)
         success = publisher.publish_meme_post(
             meme_id=meme_id,
@@ -256,52 +353,69 @@ def publish_meme_task(self, meme_id: str, media_url_or_path: str, caption: str, 
             logger.info(f"Instagram publish completed successfully for Meme ID: {meme_id}")
         else:
             logger.error(f"Instagram publish failed for Meme ID: {meme_id}")
-
-        # 2. Telegram Publisher
-        try:
-            from src.services.publisher import TelegramPublisherService
-            tg_publisher = TelegramPublisherService(db)
-            tg_success = tg_publisher.publish_meme_post(
-                meme_id=meme_id,
-                image_path=media_url_or_path,
-                caption=caption
-            )
-            if tg_success:
-                logger.info(f"Telegram publish completed successfully for Meme ID: {meme_id}")
-            else:
-                logger.warning(f"Telegram publish skipped or failed for Meme ID: {meme_id}")
-        except Exception as tg_err:
-            logger.error(f"Telegram publishing exception: {str(tg_err)}")
-
-        # 3. Microsoft Teams Publisher
-        try:
-            from src.services.publisher import TeamsPublisherService
-            teams_publisher = TeamsPublisherService(db)
-            
-            # Fetch article title and summary for the connector card
-            meme = db.query(Meme).filter(Meme.id == meme_id).first()
-            if meme and meme.article:
-                title = meme.article.title
-                summary = meme.one_line_summary
-            else:
-                title = "New AI Meme"
-                summary = "Meme summary not found"
-                
-            teams_success = teams_publisher.publish_meme_post(
-                meme_id=meme_id,
-                title=title,
-                summary=summary,
-                caption=caption
-            )
-            if teams_success:
-                logger.info(f"MS Teams publish completed successfully for Meme ID: {meme_id}")
-            else:
-                logger.warning(f"MS Teams publish skipped or failed for Meme ID: {meme_id}")
-        except Exception as teams_err:
-            logger.error(f"MS Teams publishing exception: {str(teams_err)}")
-
     except Exception as exc:
-        logger.error(f"Error in publish_meme_task: {str(exc)}")
+        logger.error(f"Error in publish_to_instagram_task: {str(exc)}")
+        db.rollback()
+        raise self.retry(exc=exc)
+    finally:
+        db.close()
+
+
+@celery_app.task(bind=True, max_retries=10, rate_limit="5/m")
+def publish_to_telegram_task(self, meme_id: str, image_path: str, caption: str):
+    """Publish meme to Telegram with dynamic rate limit retrying."""
+    logger.info(f"Starting Celery Task: publish_to_telegram_task for Meme ID: {meme_id}")
+    db = SessionLocal()
+    try:
+        from src.services.publisher import TelegramPublisherService, TelegramRateLimitException
+        tg_publisher = TelegramPublisherService(db)
+        tg_publisher.publish_meme_post(meme_id=meme_id, image_path=image_path, caption=caption)
+    except TelegramRateLimitException as exc:
+        if self.request.retries >= self.max_retries:
+            logger.error(f"Telegram rate limit retry limit exceeded. Logging final failure to DB.")
+            # Create a failed log
+            log = PublicationLog(
+                meme_id=meme_id,
+                platform="telegram",
+                status="failed",
+                external_post_id=None,
+                error_message=f"Max retries exceeded due to rate limiting: {str(exc)}"
+            )
+            db.add(log)
+            db.commit()
+            return
+        
+        logger.warning(f"Telegram rate limit hit. Retrying task in {exc.retry_after}s. (Attempt {self.request.retries + 1}/{self.max_retries})")
+        db.rollback()
+        raise self.retry(exc=exc, countdown=exc.retry_after)
+    except Exception as exc:
+        logger.error(f"Error in publish_to_telegram_task: {str(exc)}")
+        db.rollback()
+        raise self.retry(exc=exc, countdown=60)
+    finally:
+        db.close()
+
+
+@celery_app.task(bind=True, max_retries=3, default_retry_delay=180)
+def publish_to_teams_task(self, meme_id: str, title: str, summary: str, caption: str):
+    """Publish meme to Microsoft Teams."""
+    logger.info(f"Starting Celery Task: publish_to_teams_task for Meme ID: {meme_id}")
+    db = SessionLocal()
+    try:
+        from src.services.publisher import TeamsPublisherService
+        teams_publisher = TeamsPublisherService(db)
+        teams_success = teams_publisher.publish_meme_post(
+            meme_id=meme_id,
+            title=title,
+            summary=summary,
+            caption=caption
+        )
+        if teams_success:
+            logger.info(f"MS Teams publish completed successfully for Meme ID: {meme_id}")
+        else:
+            logger.warning(f"MS Teams publish failed for Meme ID: {meme_id}")
+    except Exception as exc:
+        logger.error(f"Error in publish_to_teams_task: {str(exc)}")
         db.rollback()
         raise self.retry(exc=exc)
     finally:

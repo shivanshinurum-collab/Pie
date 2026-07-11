@@ -6,6 +6,12 @@ from sqlalchemy.orm import Session
 from src.config import settings, logger
 from src.database import PublicationLog, Meme
 
+class TelegramRateLimitException(Exception):
+    def __init__(self, retry_after: int):
+        self.retry_after = retry_after
+        super().__init__(f"Telegram Rate Limit: Retry after {retry_after} seconds")
+
+
 class InstagramPublisherService:
     def __init__(self, db: Session):
         self.db = db
@@ -37,12 +43,22 @@ class InstagramPublisherService:
         }
         
         try:
+            import fcntl
             records = []
-            if os.path.exists(log_file):
-                with open(log_file, "r") as f:
-                    records = json.load(f)
-            records.append(post_record)
-            with open(log_file, "w") as f:
+            with open(log_file, "a+") as f:
+                fcntl.flock(f, fcntl.LOCK_EX)
+                f.seek(0)
+                content = f.read().strip()
+                if content:
+                    try:
+                        records = json.loads(content)
+                    except Exception as parse_err:
+                        logger.error(f"Failed to parse mock tracker JSON, starting fresh: {str(parse_err)}")
+                        records = []
+                
+                records.append(post_record)
+                f.seek(0)
+                f.truncate()
                 json.dump(records, f, indent=4)
         except Exception as e:
             logger.error(f"Failed to write mock post tracker file: {str(e)}")
@@ -239,6 +255,10 @@ class TelegramPublisherService:
                     error_msg = f"Telegram API error: {res_data}"
                     logger.error(error_msg)
                     
+                    if response.status_code == 429 or res_data.get("error_code") == 429:
+                        retry_after = res_data.get("parameters", {}).get("retry_after", 10)
+                        raise TelegramRateLimitException(retry_after)
+                        
                     log = PublicationLog(
                         meme_id=meme_id,
                         platform="telegram",

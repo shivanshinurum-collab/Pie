@@ -107,7 +107,7 @@ def run_integration_check():
         composed_meme_path = os.path.join(meme_folder, "composed_meme_funny.jpg")
         
         composed_success = compositor.compose_meme(
-            headline=test_article.title,
+            headline=getattr(meme, 'rewritten_title', None) or test_article.title,
             subheadline=meme.one_line_summary,
             image_path=base_img_path,
             caption="ME TRYING TO LAUGH AT THE AI'S CRITIQUE OF MY COMPILATION LOGS",

@@ -12,7 +12,7 @@ import io
 # ======================
 # CONFIG
 # ======================
-START_URL = "https://about.google/"
+START_URL = "https://inurum.com"
 MAX_PAGES = 20   # safety limit (change if needed)
 
 HEADERS = {

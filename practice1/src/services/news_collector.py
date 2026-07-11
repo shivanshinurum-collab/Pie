@@ -44,105 +44,163 @@ class NewsCollectorService:
         return True
 
     def fetch_google_news_rss(self) -> list:
-        """Fetch news from Google News RSS feed (highly reliable, no key needed)."""
+        """Fetch news from Google News RSS feed (80% India, 20% US)."""
         logger.info("Fetching news from Google News RSS...")
         articles = []
-        try:
-            url = "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
-            feed = feedparser.parse(url)
-            for entry in feed.entries[:25]:
-                # Google News RSS titles are formatted as "Headline - Source"
-                title = entry.title
-                source_name = "Google News"
-                if " - " in title:
-                    parts = title.split(" - ")
-                    title = " - ".join(parts[:-1])
-                    source_name = parts[-1]
-                
-                published_at = datetime.utcnow()
-                if hasattr(entry, "published_parsed") and entry.published_parsed:
-                    published_at = datetime(*entry.published_parsed[:6])
-                
-                articles.append({
-                    "title": title,
-                    "description": entry.summary if hasattr(entry, "summary") else "",
-                    "full_content": entry.summary if hasattr(entry, "summary") else "",
-                    "source_url": entry.link,
-                    "image_url": None,
-                    "author": "Google News",
-                    "published_at": published_at,
-                    "category": "General",
-                    "source_name": source_name,
-                    "popularity_score": 50.0,  # Base popularity
-                    "language": "en",
-                    "country": "US"
-                })
-        except Exception as e:
-            logger.error(f"Error fetching Google News RSS: {str(e)}")
+        
+        # Configure the sources: (url, limit, country_code)
+        sources = [
+            ("https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en", 20, "IN"),
+            ("https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en", 5, "US")
+        ]
+        
+        for url, limit, country in sources:
+            try:
+                feed = feedparser.parse(url)
+                for entry in feed.entries[:limit]:
+                    # Google News RSS titles are formatted as "Headline - Source"
+                    title = entry.title
+                    source_name = "Google News"
+                    if " - " in title:
+                        parts = title.split(" - ")
+                        title = " - ".join(parts[:-1])
+                        source_name = parts[-1]
+                    
+                    published_at = datetime.utcnow()
+                    if hasattr(entry, "published_parsed") and entry.published_parsed:
+                        published_at = datetime(*entry.published_parsed[:6])
+                    
+                    articles.append({
+                        "title": title,
+                        "description": entry.summary if hasattr(entry, "summary") else "",
+                        "full_content": entry.summary if hasattr(entry, "summary") else "",
+                        "source_url": entry.link,
+                        "image_url": None,
+                        "author": "Google News",
+                        "published_at": published_at,
+                        "category": "General",
+                        "source_name": f"{source_name} ({country})",
+                        "popularity_score": 50.0,  # Base popularity
+                        "language": "en",
+                        "country": country
+                    })
+            except Exception as e:
+                logger.error(f"Error fetching Google News RSS ({country}): {str(e)}")
         return articles
 
     def fetch_reddit_news(self) -> list:
-        """Fetch trending news from Reddit (/r/news and /r/worldnews) using JSON endpoint."""
-        logger.info("Fetching news from Reddit /r/news and /r/worldnews...")
+        """Fetch trending news from Reddit (80% r/india, 20% r/worldnews)."""
+        logger.info("Fetching news from Reddit /r/india and /r/worldnews...")
         articles = []
-        subreddits = ["news", "worldnews"]
-        for sub in subreddits:
+        
+        # Configure subreddits: (name, limit, country)
+        subreddits = [
+            ("india", 12, "IN"),
+            ("worldnews", 3, "World")
+        ]
+        
+        for sub, limit, country in subreddits:
             try:
-                url = f"https://www.reddit.com/r/{sub}/hot.json?limit=15"
-                response = requests.get(url, headers=self.headers, timeout=10)
-                if response.status_code == 200:
-                    data = response.json()
-                    children = data.get("data", {}).get("children", [])
-                    for child in children:
-                        post = child.get("data", {})
-                        if post.get("is_self"):
+                # We use .rss because Reddit blocks public unauthenticated JSON API endpoints (403 Forbidden).
+                url = f"https://www.reddit.com/r/{sub}/.rss"
+                
+                # Retry logic for 429 rate limiting
+                max_retries = 3
+                retry_delay = 3
+                response = None
+                for attempt in range(max_retries):
+                    response = requests.get(url, headers=self.headers, timeout=10)
+                    if response.status_code == 200:
+                        break
+                    elif response.status_code == 429:
+                        logger.warning(f"Reddit RSS rate-limited (429) for r/{sub}, retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
+                        import time
+                        time.sleep(retry_delay)
+                        retry_delay *= 2
+                    else:
+                        break
+                
+                if response and response.status_code == 200:
+                    parsed = feedparser.parse(response.text)
+                    for entry in parsed.entries[:limit]:
+                        # Extract author username safely
+                        author = entry.get("author", "Unknown")
+                        if author.startswith("/u/"):
+                            author = author[3:]
+                        
+                        # Extract the actual external news article URL from the description/content HTML
+                        content_val = entry.content[0].value if hasattr(entry, "content") and entry.content else (entry.summary if hasattr(entry, "summary") else "")
+                        links = re.findall(r'href="([^"]+)"', content_val)
+                        source_url = entry.link
+                        is_self = True
+                        for l in links:
+                            if "reddit.com" not in l and not l.startswith("/"):
+                                source_url = l
+                                is_self = False
+                                break
+                        
+                        if is_self:
                             continue  # Skip text posts, focus on link posts
                         
-                        # Popularity score based on ups (upvotes) and num_comments
-                        ups = post.get("ups", 0)
-                        comments = post.get("num_comments", 0)
-                        popularity = min(100.0, (ups * 0.05) + (comments * 0.1))
+                        # Use updated or published parsed date
+                        published_at = datetime.utcnow()
+                        if hasattr(entry, "updated_parsed") and entry.updated_parsed:
+                            published_at = datetime(*entry.updated_parsed[:6])
+                        elif hasattr(entry, "published_parsed") and entry.published_parsed:
+                            published_at = datetime(*entry.published_parsed[:6])
                         
-                        created_utc = post.get("created_utc")
-                        published_at = datetime.utcfromtimestamp(created_utc) if created_utc else datetime.utcnow()
+                        # High popularity since it is trending in top subreddits hot feed
+                        popularity = 80.0
                         
                         articles.append({
-                            "title": post.get("title"),
-                            "description": f"Reddit post on r/{sub} with {ups} upvotes and {comments} comments.",
-                            "full_content": post.get("title"),
-                            "source_url": post.get("url"),
-                            "image_url": post.get("thumbnail") if post.get("thumbnail", "").startswith("http") else None,
-                            "author": post.get("author"),
+                            "title": entry.title,
+                            "description": f"Reddit post on r/{sub} by /u/{author}.",
+                            "full_content": entry.title,
+                            "source_url": source_url,
+                            "image_url": None,
+                            "author": author,
                             "published_at": published_at,
                             "category": "General",
                             "source_name": f"Reddit r/{sub}",
                             "popularity_score": popularity,
                             "language": "en",
-                            "country": "US"
+                            "country": country
                         })
                 else:
-                    logger.warning(f"Reddit API returned status {response.status_code} for r/{sub}")
+                    status_code = response.status_code if response else "No Response"
+                    logger.warning(f"Reddit RSS failed with status {status_code} for r/{sub}")
             except Exception as e:
                 logger.error(f"Error fetching Reddit news from r/{sub}: {str(e)}")
+            
+            # Add a small delay between subreddits to prevent IP-based rate limiting
+            import time
+            time.sleep(2)
+            
         return articles
 
     def fetch_rss_feeds(self) -> list:
-        """Fetch high-quality global news RSS feeds."""
+        """Fetch high-quality news RSS feeds (80% India, 20% Global)."""
         logger.info("Fetching standard RSS feeds...")
-        feeds = {
-            "BBC World News": "http://feeds.bbci.co.uk/news/world/rss.xml",
-            "BBC Tech News": "http://feeds.bbci.co.uk/news/technology/rss.xml",
-            "NYT Home Page": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
-            "CNN Top Stories": "http://rss.cnn.com/rss/cnn_topstories.rss",
-            "TechCrunch": "https://techcrunch.com/feed/",
-            "Wired News": "https://www.wired.com/feed/rss",
-            "The Verge": "https://www.theverge.com/rss/index.xml"
-        }
+        
+        # Configure feeds: (source_name, url, limit, country)
+        feeds = [
+            # Indian feeds (limit: 15 each)
+            ("Times of India", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms", 15, "IN"),
+            ("The Hindu", "https://www.thehindu.com/news/national/feeder/default.xml", 15, "IN"),
+            ("Indian Express", "https://indianexpress.com/feed/", 15, "IN"),
+            ("NDTV News", "https://feeds.feedburner.com/ndtvnews-top-stories", 15, "IN"),
+            
+            # Global feeds (limit: 3 each)
+            ("BBC World News", "http://feeds.bbci.co.uk/news/world/rss.xml", 3, "World"),
+            ("TechCrunch", "https://techcrunch.com/feed/", 3, "World"),
+            ("Wired News", "https://www.wired.com/feed/rss", 3, "World")
+        ]
+        
         articles = []
-        for source, url in feeds.items():
+        for source, url, limit, country in feeds:
             try:
                 parsed = feedparser.parse(url)
-                for entry in parsed.entries[:15]:
+                for entry in parsed.entries[:limit]:
                     published_at = datetime.utcnow()
                     if hasattr(entry, "published_parsed") and entry.published_parsed:
                         published_at = datetime(*entry.published_parsed[:6])
@@ -152,103 +210,116 @@ class NewsCollectorService:
                         "description": entry.summary if hasattr(entry, "summary") else "",
                         "full_content": entry.summary if hasattr(entry, "summary") else "",
                         "source_url": entry.link,
-                        "image_url": entry.media_content[0]["url"] if hasattr(entry, "media_content") and entry.media_content else None,
+                        "image_url": entry.media_content[0].get("url") if hasattr(entry, "media_content") and entry.media_content and isinstance(entry.media_content[0], dict) else None,
                         "author": source,
                         "published_at": published_at,
-                        "category": "World",
+                        "category": "National" if country == "IN" else "World",
                         "source_name": source,
                         "popularity_score": 60.0,
                         "language": "en",
-                        "country": "US"
+                        "country": country
                     })
             except Exception as e:
                 logger.error(f"Error parsing RSS feed for {source}: {str(e)}")
         return articles
 
     def fetch_news_api(self) -> list:
-        """Fetch news from News API if api key is configured."""
+        """Fetch news from News API if api key is configured (80% India, 20% Global)."""
         if not settings.NEWS_API_KEY:
             return []
         
         logger.info("Fetching from News API...")
         articles = []
-        try:
-            url = f"https://newsapi.org/v2/top-headlines?language=en&apiKey={settings.NEWS_API_KEY}"
-            response = requests.get(url, headers=self.headers, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                for item in data.get("articles", [])[:20]:
-                    pub_str = item.get("publishedAt")
-                    published_at = datetime.strptime(pub_str, "%Y-%m-%dT%H:%M:%SZ") if pub_str else datetime.utcnow()
-                    
-                    articles.append({
-                        "title": item.get("title"),
-                        "description": item.get("description") or "",
-                        "full_content": item.get("content") or item.get("description") or "",
-                        "source_url": item.get("url"),
-                        "image_url": item.get("urlToImage"),
-                        "author": item.get("author") or "NewsAPI",
-                        "published_at": published_at,
-                        "category": "General",
-                        "source_name": item.get("source", {}).get("name") or "NewsAPI",
-                        "popularity_score": 75.0,  # Highly curated trending topics
-                        "language": "en",
-                        "country": "US"
-                    })
-        except Exception as e:
-            logger.error(f"Error fetching from News API: {str(e)}")
+        
+        # Configure targets: (params_string, limit, country)
+        targets = [
+            ("country=in", 16, "IN"),
+            ("language=en", 4, "World")
+        ]
+        
+        for params_str, limit, country in targets:
+            try:
+                url = f"https://newsapi.org/v2/top-headlines?{params_str}&apiKey={settings.NEWS_API_KEY}"
+                response = requests.get(url, headers=self.headers, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    for item in data.get("articles", [])[:limit]:
+                        pub_str = item.get("publishedAt")
+                        published_at = datetime.strptime(pub_str, "%Y-%m-%dT%H:%M:%SZ") if pub_str else datetime.utcnow()
+                        
+                        articles.append({
+                            "title": item.get("title"),
+                            "description": item.get("description") or "",
+                            "full_content": item.get("content") or item.get("description") or "",
+                            "source_url": item.get("url"),
+                            "image_url": item.get("urlToImage"),
+                            "author": item.get("author") or "NewsAPI",
+                            "published_at": published_at,
+                            "category": "General",
+                            "source_name": f"{item.get('source', {}).get('name') or 'NewsAPI'} ({country})",
+                            "popularity_score": 75.0,  # Highly curated trending topics
+                            "language": "en",
+                            "country": country
+                        })
+            except Exception as e:
+                logger.error(f"Error fetching from News API ({country}): {str(e)}")
         return articles
 
     def fetch_currents_news(self) -> list:
-        """Fetch news from Currents API if api key is configured."""
+        """Fetch news from Currents API if api key is configured (80% India, 20% Global)."""
         if not settings.CURRENTS_API_KEY:
             return []
         
         logger.info("Fetching from Currents API...")
         articles = []
-        try:
-            url = "https://api.currentsapi.services/v1/latest-news"
-            headers = {"Authorization": f"{settings.CURRENTS_API_KEY}"}  # Direct key is standard or Bearer. Let's do Bearer to be safe
-            if not settings.CURRENTS_API_KEY.startswith("Bearer "):
-                headers = {"Authorization": f"Bearer {settings.CURRENTS_API_KEY}"}
+        
+        # Configure targets: (extra_params_dict, limit, country)
+        targets = [
+            ({"country": "IN", "language": "en"}, 16, "IN"),
+            ({"language": "en"}, 4, "World")
+        ]
+        
+        url = "https://api.currentsapi.services/v1/latest-news"
+        headers = {"Authorization": f"{settings.CURRENTS_API_KEY}"}
+        if not settings.CURRENTS_API_KEY.startswith("Bearer "):
+            headers = {"Authorization": f"Bearer {settings.CURRENTS_API_KEY}"}
             
-            params = {
-                "language": "en"
-            }
-            response = requests.get(url, headers=headers, params=params, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                for item in data.get("news", [])[:20]:
-                    pub_str = item.get("published")
-                    if pub_str and len(pub_str) >= 19:
-                        try:
-                            published_at = datetime.strptime(pub_str[:19], "%Y-%m-%d %H:%M:%S")
-                        except Exception:
+        for extra_params, limit, country in targets:
+            try:
+                response = requests.get(url, headers=headers, params=extra_params, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    for item in data.get("news", [])[:limit]:
+                        pub_str = item.get("published")
+                        if pub_str and len(pub_str) >= 19:
+                            try:
+                                published_at = datetime.strptime(pub_str[:19], "%Y-%m-%d %H:%M:%S")
+                            except Exception:
+                                published_at = datetime.utcnow()
+                        else:
                             published_at = datetime.utcnow()
-                    else:
-                        published_at = datetime.utcnow()
-                    
-                    categories = item.get("category", [])
-                    category = categories[0].capitalize() if categories else "General"
-                    
-                    articles.append({
-                        "title": item.get("title"),
-                        "description": item.get("description") or "",
-                        "full_content": item.get("description") or "",
-                        "source_url": item.get("url"),
-                        "image_url": item.get("image"),
-                        "author": item.get("author") or "CurrentsAPI",
-                        "published_at": published_at,
-                        "category": category,
-                        "source_name": "CurrentsAPI",
-                        "popularity_score": 70.0,
-                        "language": item.get("language") or "en",
-                        "country": "US"
-                    })
-            else:
-                logger.warning(f"Currents API returned status {response.status_code}: {response.text}")
-        except Exception as e:
-            logger.error(f"Error fetching from Currents API: {str(e)}")
+                        
+                        categories = item.get("category", [])
+                        category = categories[0].capitalize() if categories else "General"
+                        
+                        articles.append({
+                            "title": item.get("title"),
+                            "description": item.get("description") or "",
+                            "full_content": item.get("description") or "",
+                            "source_url": item.get("url"),
+                            "image_url": item.get("image"),
+                            "author": item.get("author") or "CurrentsAPI",
+                            "published_at": published_at,
+                            "category": category,
+                            "source_name": f"CurrentsAPI ({country})",
+                            "popularity_score": 70.0,
+                            "language": item.get("language") or "en",
+                            "country": country
+                        })
+                else:
+                    logger.warning(f"Currents API returned status {response.status_code} for {country}: {response.text}")
+            except Exception as e:
+                logger.error(f"Error fetching from Currents API ({country}): {str(e)}")
         return articles
 
     def scrape_full_article_content(self, url: str) -> str:
